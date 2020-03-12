@@ -1028,20 +1028,21 @@ end
 
 eventHandler.OnPlayerMiscellaneous = function(pid)
     if Players[pid] ~= nil and Players[pid]:IsLoggedIn() then
-        local changeType = tes3mp.GetMiscellaneousChangeType(pid)
+        local packet = packetReader.GetPlayerMiscellaneous(pid)
+        local args = {pid, packet.data}
 
-        if changeType == enumerations.miscellaneous.MARK_LOCATION then
-            local eventStatus = customEventHooks.triggerValidators("OnPlayerMarkLocation", {pid})
+        if packet.type == enumerations.miscellaneous.MARK_LOCATION then
+            local eventStatus = customEventHooks.triggerValidators("OnPlayerMarkLocation", args)
             if eventStatus.validDefaultHandler then
-                Players[pid]:SaveMarkLocation()
+                Players[pid]:SaveMarkLocation(packet.data)
             end
-            customEventHooks.triggerHandlers("OnPlayerMarkLocation", eventStatus, {pid})
-        elseif changeType == enumerations.miscellaneous.SELECTED_SPELL then
-            local eventStatus = customEventHooks.triggerValidators("OnPlayerSelectedSpell", {pid})
+            customEventHooks.triggerHandlers("OnPlayerMarkLocation", eventStatus, args)
+        elseif packet.type == enumerations.miscellaneous.SELECTED_SPELL then
+            local eventStatus = customEventHooks.triggerValidators("OnPlayerSelectedSpell", args)
             if eventStatus.validDefaultHandler then
-                Players[pid]:SaveSelectedSpell()
+                Players[pid]:SaveSelectedSpell(packet.data)
             end
-            customEventHooks.triggerHandlers("OnPlayerSelectedSpell", eventStatus, {pid})
+            customEventHooks.triggerHandlers("OnPlayerSelectedSpell", eventStatus, args)
         end
     end
 end

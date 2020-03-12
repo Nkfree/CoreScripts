@@ -1388,18 +1388,10 @@ function BasePlayer:LoadMarkLocation()
     end
 end
 
-function BasePlayer:SaveMarkLocation()
+function BasePlayer:SaveMarkLocation(location)
 
     if self.data.miscellaneous == nil then self.data.miscellaneous = {} end
-
-    self.data.miscellaneous.markLocation = {
-        cell = tes3mp.GetMarkCell(self.pid),
-        posX = tes3mp.GetMarkPosX(self.pid),
-        posY = tes3mp.GetMarkPosY(self.pid),
-        posZ = tes3mp.GetMarkPosZ(self.pid),
-        rotX = tes3mp.GetMarkRotX(self.pid),
-        rotZ = tes3mp.GetMarkRotZ(self.pid)
-    }
+    self.data.miscellaneous.markLocation = tableHelper.shallowCopy(location)
 end
 
 function BasePlayer:LoadSelectedSpell()
@@ -1414,11 +1406,10 @@ function BasePlayer:LoadSelectedSpell()
     end
 end
 
-function BasePlayer:SaveSelectedSpell()
+function BasePlayer:SaveSelectedSpell(spell)
 
     if self.data.miscellaneous == nil then self.data.miscellaneous = {} end
-
-    self.data.miscellaneous.selectedSpell = tes3mp.GetSelectedSpellId(self.pid)
+    self.data.miscellaneous.selectedSpell = spell.id
 end
 
 function BasePlayer:GetDifficulty()

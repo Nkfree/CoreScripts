@@ -228,6 +228,29 @@ packetReader.GetPlayerItemUsed = function(pid)
     return tes3mp.GetUsedItemRefId(pid)
 end
 
+packetReader.GetPlayerMiscellaneous = function(pid)
+    local type = tes3mp.GetMiscellaneousChangeType(pid)
+    local data
+    if type == enumerations.miscellaneous.MARK_LOCATION then
+        data = {
+            cell = tes3mp.GetMarkCell(pid),
+            posX = tes3mp.GetMarkPosX(pid),
+            posY = tes3mp.GetMarkPosY(pid),
+            posZ = tes3mp.GetMarkPosZ(pid),
+            rotX = tes3mp.GetMarkRotX(pid),
+            rotZ = tes3mp.GetMarkRotZ(pid)
+        }
+    elseif type == enumerations.miscellaneous.SELECTED_SPELL then
+        data = {
+            id = tes3mp.GetSelectedSpellId(pid)
+        }
+    end
+    return {
+        type = type,
+        data = data
+    }
+end
+
 packetReader.GetPlayerJournalItemArray = function(pid)
 
     local journalItemArray = {}
