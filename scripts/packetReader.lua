@@ -224,6 +224,10 @@ packetReader.GetObjectPacketTables = function(packetType)
     return packetTables
 end
 
+packetReader.GetPlayerItemUsed = function(pid)
+    return tes3mp.GetUsedItemRefId(pid)
+end
+
 packetReader.GetPlayerJournalItemArray = function(pid)
 
     local journalItemArray = {}

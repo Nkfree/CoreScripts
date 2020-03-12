@@ -1012,9 +1012,9 @@ end
 
 eventHandler.OnPlayerItemUse = function(pid)
     if Players[pid] ~= nil and Players[pid]:IsLoggedIn() then
-        local itemRefId = tes3mp.GetUsedItemRefId(pid)
+        local itemRefId = packetReader.GetPlayerItemUsed(pid)
         local eventStatus = customEventHooks.triggerValidators("OnPlayerItemUse", {pid, itemRefId})
-        
+
         if eventStatus.validDefaultHandler then
             tes3mp.LogMessage(enumerations.log.INFO, logicHandler.GetChatName(pid) .. " used inventory item " .. itemRefId)
 
