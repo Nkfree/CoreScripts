@@ -224,6 +224,25 @@ packetReader.GetObjectPacketTables = function(packetType)
     return packetTables
 end
 
+packetReader.GetPlayerCellChange = function(pid)
+    return {
+        newLocation = {
+            cell = tes3mp.GetCell(pid),
+            posX = tes3mp.GetPosX(pid),
+            posY = tes3mp.GetPosY(pid),
+            posZ = tes3mp.GetPosZ(pid),
+            rotX = tes3mp.GetRotX(pid),
+            rotZ = tes3mp.GetRotZ(pid)
+        },
+        oldLocation = {
+            cell = Players[pid].data.location.cell,
+            posX = tes3mp.GetPreviousCellPosX(pid),
+            posY = tes3mp.GetPreviousCellPosY(pid),
+            posZ = tes3mp.GetPreviousCellPosZ(pid)
+        }
+    }
+end
+
 packetReader.GetPlayerItemUsed = function(pid)
     return tes3mp.GetUsedItemRefId(pid)
 end

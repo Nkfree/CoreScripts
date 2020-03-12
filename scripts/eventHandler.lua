@@ -739,13 +739,16 @@ end
 eventHandler.OnPlayerCellChange = function(pid)
     if Players[pid] ~= nil and Players[pid]:IsLoggedIn() then
 
-        local currentCellDescription = tes3mp.GetCell(pid)
+        local packet = packetReader.GetPlayerCellChange(pid)
+        local currentCellDescription = packet.newLocation.cell
 
         if not tableHelper.containsValue(config.forbiddenCells, currentCellDescription) then
-            local previousCellDescription = Players[pid].data.location.cell
-            
-            local eventStatus = customEventHooks.triggerValidators("OnPlayerCellChange", {pid, previousCellDescription, currentCellDescription})
-            
+            local previousCellDescription = packet.oldLocation.cell
+
+            local eventStatus = customEventHooks.triggerValidators(
+                "OnPlayerCellChange",
+                {pid, previousCellDescription, currentCellDescription, packet}
+            )
             if eventStatus.validDefaultHandler then
                 -- If this player is changing their region, add them to the visitors of the new
                 -- region while removing them from the visitors of their old region
@@ -801,12 +804,13 @@ eventHandler.OnPlayerCellChange = function(pid)
                     WorldInstance:QuicksaveToDrive()
                 end
             end
-            
-            customEventHooks.triggerHandlers("OnPlayerCellChange", eventStatus, {pid, previousCellDescription, currentCellDescription})
+
+            customEventHooks.triggerHandlers(
+                "OnPlayerCellChange", eventStatus,
+                {pid, previousCellDescription, currentCellDescription, packet}
+            )
         else
-            Players[pid].data.location.posX = tes3mp.GetPreviousCellPosX(pid)
-            Players[pid].data.location.posY = tes3mp.GetPreviousCellPosY(pid)
-            Players[pid].data.location.posZ = tes3mp.GetPreviousCellPosZ(pid)
+            Players[pid].data.location = tableHelper.merge(Players[pid].data.location, packet.oldLocation)
             Players[pid]:LoadCell()
             tes3mp.MessageBox(pid, -1, "You are forbidden from entering that area.")
         end
